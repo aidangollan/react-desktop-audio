@@ -1,0 +1,30 @@
+{
+  "name": "react-desktop-audio",
+  "version": "1.0.0",
+  "description": "A React hook for desktop audio capture.",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "prepare": "npm run build"
+  },
+  "keywords": [
+    "audio",
+    "desktop",
+    "react",
+    "hook"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "peerDependencies": {
+    "react": "^17.0.0 || ^18.0.0",
+    "react-dom": "^17.0.0 || ^18.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.2",
+    "@types/react-dom": "^18.3.0",
+    "typescript": "^4.0.0"
+  },
+  "files": [
+    "dist"
+  ]
+}
