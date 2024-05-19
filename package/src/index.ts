@@ -2,7 +2,21 @@ import { useRef, useState, useCallback, useEffect } from 'react';
 
 type CaptureState = 'stopped' | 'requesting_permissions' | 'recording' | 'error';
 
-const useDesktopAudioCapture = () => {
+interface UseDesktopAudioCapture {
+  captureState: CaptureState;
+  startRecording: () => void;
+  stopRecording: () => void;
+  audioBlob: Blob | null;
+  error: string | null;
+  requestPermissionsAndStartRecording: () => void;
+}
+
+/**
+ * A custom hook for capturing desktop audio.
+ * 
+ * @returns {UseDesktopAudioCapture} An object containing the capture state, control functions, audio blob, and error message.
+ */
+const useDesktopAudioCapture = (): UseDesktopAudioCapture => {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
@@ -47,6 +61,12 @@ const useDesktopAudioCapture = () => {
   }, []);
 
   const requestPermissionsAndStartRecording = useCallback(() => {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
+      setError('Browser does not support screen recording');
+      setCaptureState('error');
+      return;
+    }
+
     setCaptureState('requesting_permissions');
     setError(null);
     navigator.mediaDevices.getDisplayMedia({ audio: true, video: true })
