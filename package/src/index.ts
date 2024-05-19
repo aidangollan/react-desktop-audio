@@ -34,19 +34,6 @@ const useDesktopAudioCapture = (): UseDesktopAudioCapture => {
     audioChunksRef.current = [];
   }, []);
 
-  const startRecording = useCallback(() => {
-    if (streamRef.current) {
-      const recorder = new MediaRecorder(streamRef.current);
-      setCaptureState('recording');
-      setError(null);
-      setAudioBlob(null);
-      recorder.ondataavailable = handleDataAvailable;
-      recorder.onstop = handleStop;
-      recorder.start();
-      mediaRecorderRef.current = recorder;
-    }
-  }, [handleDataAvailable, handleStop]);
-
   const stopRecording = useCallback(() => {
     if (mediaRecorderRef.current) {
       mediaRecorderRef.current.stop();
@@ -59,6 +46,26 @@ const useDesktopAudioCapture = (): UseDesktopAudioCapture => {
       }
     }
   }, []);
+
+  const startRecording = useCallback(() => {
+    if (streamRef.current) {
+      const recorder = new MediaRecorder(streamRef.current);
+      setCaptureState('recording');
+      setError(null);
+      setAudioBlob(null);
+      recorder.ondataavailable = handleDataAvailable;
+      recorder.onstop = handleStop;
+      recorder.start();
+      mediaRecorderRef.current = recorder;
+
+      streamRef.current.getTracks().forEach(track => {
+        track.onended = () => {
+          setCaptureState('stopped');
+          stopRecording();
+        };
+      });
+    }
+  }, [handleDataAvailable, handleStop, stopRecording]);
 
   const requestPermissionsAndStartRecording = useCallback(() => {
     if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
