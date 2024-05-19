@@ -12,7 +12,6 @@ const useDesktopAudioCapture = () => {
 
   const handleDataAvailable = useCallback((event: BlobEvent) => {
     audioChunksRef.current.push(event.data);
-    console.log('Received audio chunk:', event.data);
   }, []);
 
   const handleStop = useCallback(() => {
@@ -63,7 +62,6 @@ const useDesktopAudioCapture = () => {
         }
       })
       .catch(err => {
-        console.error('Error starting desktop audio capture:', err);
         setError('Error starting desktop audio capture');
         setCaptureState('error');
       });
